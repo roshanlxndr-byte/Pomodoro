@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FocusFlow Settings & Local Storage</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #0f172a;
+      --border: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #f43f5e;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    p.sub { color: var(--muted); font-size: 14px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #e2e8f0;
+    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    label { font-size: 13px; font-weight: 500; color: #cbd5e1; display: flex; justify-content: space-between; }
+    input[type="number"], select {
+      background: #090d16;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    input[type="range"] { accent-color: var(--accent); }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-danger { background: #450a0a; border: 1px solid #7f1d1d; color: #f87171; }
+    .btn-danger:hover { background: #7f1d1d; color: #fff; }
+    .btn-secondary { background: #1e293b; color: white; }
+    .actions-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>FocusFlow Extension Options</h1>
+      <p class="sub">Configure focus intervals, audio alarms, notifications, and local storage data.</p>
+    </div>
+
+    <!-- Interval Settings -->
+    <div class="card">
+      <div class="card-title">Interval Customization (Minutes)</div>
+      <div class="grid">
+        <div class="form-group">
+          <label for="focusDuration">Focus Duration <span>min</span></label>
+          <input type="number" id="focusDuration" min="1" max="120" value="25">
+        </div>
+        <div class="form-group">
+          <label for="shortBreakDuration">Short Break <span>min</span></label>
+          <input type="number" id="shortBreakDuration" min="1" max="60" value="5">
+        </div>
+        <div class="form-group">
+          <label for="longBreakDuration">Long Break <span>min</span></label>
+          <input type="number" id="longBreakDuration" min="1" max="90" value="15">
+        </div>
+        <div class="form-group">
+          <label for="longBreakInterval">Long Break Every <span>sessions</span></label>
+          <input type="number" id="longBreakInterval" min="1" max="12" value="4">
+        </div>
+      </div>
+    </div>
+
+    <!-- Automation & Audio -->
+    <div class="card">
+      <div class="card-title">Automation & Audio Alerts</div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="autoStartBreaks">
+        Auto-start breaks when focus session ends
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" id="autoStartFocus">
+        Auto-start focus sessions when break ends
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" id="notificationsEnabled" checked>
+        Show desktop notifications on interval transitions
+      </label>
+
+      <div class="grid" style="margin-top: 14px;">
+        <div class="form-group">
+          <label for="focusAlarmSound">Focus Alarm Sound</label>
+          <select id="focusAlarmSound">
+            <option value="bell">Acoustic Bell</option>
+            <option value="zen">Zen Singing Bowl</option>
+            <option value="chime">Digital Chime</option>
+            <option value="marimba">Wood Marimba</option>
+            <option value="digital">Classic Digital Beep</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="breakAlarmSound">Break Alarm Sound</label>
+          <select id="breakAlarmSound">
+            <option value="chime">Digital Chime</option>
+            <option value="zen">Zen Singing Bowl</option>
+            <option value="bell">Acoustic Bell</option>
+            <option value="marimba">Wood Marimba</option>
+            <option value="digital">Classic Digital Beep</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Local Storage & Clear Data -->
+    <div class="card" style="border-color: #3f1d24;">
+      <div class="card-title" style="color: #fca5a5;">Local Storage & Data Management</div>
+      <p class="sub" style="margin-bottom: 16px;">
+        All your interval preferences, streaks, and sessions are stored privately in your browser's local storage.
+      </p>
+      <div style="display: flex; gap: 12px;">
+        <button id="clear-data-btn" class="btn btn-danger">Clear All User Data from Local Storage</button>
+      </div>
+    </div>
+
+    <div class="actions-bar">
+      <button id="reset-defaults-btn" class="btn btn-secondary">Restore Defaults</button>
+      <button id="save-btn" class="btn btn-primary">Save Settings</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Preferences saved to local storage!</div>
+  <script src="options.js"></script>
+</body>
+</html>
